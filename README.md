@@ -32,6 +32,12 @@
 $ yarn install
 ```
 
+## Run local development
+
+```bash
+docker compose -f docker-compose.dev.yml up -d --build
+```
+
 ## Compile and run the project
 
 ```bash

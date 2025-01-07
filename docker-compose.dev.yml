@@ -1,0 +1,25 @@
+version: '3.7'
+
+services:
+  pdftruth_app:
+    build:
+      context: ./
+      dockerfile: docker/Dockerfile
+      target: base
+    container_name: pdftruth_app
+    ports:
+      - '${APP_PORT}:${APP_PORT}'
+    networks:
+      - webnet
+    volumes:
+      - ./src:/home/node/app/src
+    env_file:
+      - .env
+    command:
+      - /bin/bash
+      - -c
+      - |
+        yarn run start:dev
+
+networks:
+  webnet:

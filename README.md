@@ -26,6 +26,8 @@
 
 [Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
 
+[Microorm CLI command](https://mikro-orm.io/docs/quick-start#setting-up-the-commandline-tool) ORM
+
 ## Project setup
 
 ```bash

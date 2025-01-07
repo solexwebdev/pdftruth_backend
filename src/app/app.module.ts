@@ -5,6 +5,7 @@ import { MikroOrmModule } from '@mikro-orm/nestjs';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { EnvValidationSchema } from '@/common/utils/env-validation-schema.util';
 import { microormFactory } from '@/common/factories/microorm.factory';
+import { UsersModule } from '@/users/users.module';
 
 @Module({
   imports: [
@@ -17,6 +18,7 @@ import { microormFactory } from '@/common/factories/microorm.factory';
       inject: [ConfigService],
       useFactory: microormFactory,
     }),
+    UsersModule,
   ],
   controllers: [AppController],
   providers: [AppService],

@@ -1,4 +1,13 @@
 export enum ConfigEnv {
   NODE_ENV = 'NODE_ENV',
   APP_PORT = 'APP_PORT',
+  // DB Connection
+  DB_HOST_MASTER = 'DB_HOST_MASTER',
+  DB_PORT = 'DB_PORT',
+  DB_USER = 'DB_USER',
+  DB_PASSWORD = 'DB_PASSWORD',
+  DB_NAME = 'DB_NAME',
+
+  DB_HOST_SLAVE = 'DB_HOST_SLAVE',
+  DB_PORT_SLAVE = 'DB_PORT_SLAVE',
 }

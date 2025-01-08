@@ -11,6 +11,8 @@ import { CustomBaseEntity } from '@/db/entities/custom-base.entity';
 import { UserStatus } from '@/users/enums/user-status.enum';
 import { Social } from '@/users/entities/social.entity';
 import { Membership } from '@/users/entities/membership.entity';
+import { ICreateSocial } from '@/users/interfaces/create-social.interface';
+import { ICreateUser } from '@/users/interfaces/create-user.interface';
 
 @Entity({ tableName: 'users' })
 export class User extends CustomBaseEntity {
@@ -49,4 +51,9 @@ export class User extends CustomBaseEntity {
 
   @OneToMany(() => Membership, (membership) => membership.user)
   memberships = new Collection<Membership>(this);
+
+  constructor(data: ICreateUser) {
+    super();
+    Object.assign(this, data);
+  }
 }

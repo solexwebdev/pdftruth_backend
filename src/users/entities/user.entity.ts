@@ -10,6 +10,7 @@ import {
 import { CustomBaseEntity } from '@/db/entities/custom-base.entity';
 import { UserStatus } from '@/users/enums/user-status.enum';
 import { Social } from '@/users/entities/social.entity';
+import { Membership } from '@/users/entities/membership.entity';
 
 @Entity({ tableName: 'users' })
 export class User extends CustomBaseEntity {
@@ -45,4 +46,7 @@ export class User extends CustomBaseEntity {
 
   @OneToMany(() => Social, (social) => social.user)
   socials = new Collection<Social>(this);
+
+  @OneToMany(() => Membership, (membership) => membership.user)
+  memberships = new Collection<Membership>(this);
 }

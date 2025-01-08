@@ -1,5 +1,5 @@
 import { v4 } from 'uuid';
-import { Opt, PrimaryKey, Property } from '@mikro-orm/core';
+import { PrimaryKey, Property } from '@mikro-orm/core';
 import { IdType } from '@/db/types/id.type';
 
 export abstract class CustomBaseEntity {

@@ -13,4 +13,7 @@ export const EnvValidationSchema = Joi.object().keys({
   [ConfigEnv.DB_NAME]: Joi.required(),
   [ConfigEnv.DB_HOST_SLAVE]: Joi.required(),
   [ConfigEnv.DB_PORT_SLAVE]: Joi.number().required(),
+
+  [ConfigEnv.PASSWORD_SALT]: Joi.required(),
+  [ConfigEnv.CRYPTO_JS_SECRET_KEY]: Joi.required(),
 });

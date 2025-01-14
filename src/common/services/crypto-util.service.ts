@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { nanoid } from 'nanoid';
-import bcrypt from 'bcrypt';
+import * as bcrypt from 'bcrypt';
 import { ConfigEnv } from '@/common/enums/config-env.enum';
 import CryptoJS from 'crypto-js';
 
@@ -14,9 +14,9 @@ export class CryptoUtilService {
   }
 
   public async generatePasswordHash(source: string): Promise<string> {
-    const salt = this.configService.get<string>(ConfigEnv.PASSWORD_SALT);
+    const salt = this.configService.get<string>(ConfigEnv.ROUND_SALT);
 
-    return bcrypt.hash(source, salt as string);
+    return bcrypt.hash(source, 10);
   }
 
   public async verifyPasswordHash(

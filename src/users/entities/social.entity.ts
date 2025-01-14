@@ -1,4 +1,4 @@
-import { Entity, Enum, ManyToOne, Opt, Property } from '@mikro-orm/core';
+import { Entity, Enum, ManyToOne, Opt, Property, Rel } from '@mikro-orm/core';
 import { CustomBaseEntity } from '@/db/entities/custom-base.entity';
 import { SocialVendor } from '@/users/enums/social-vendor.enum';
 import { User } from '@/users/entities/user.entity';
@@ -13,7 +13,7 @@ export class Social extends CustomBaseEntity {
   vendor!: SocialVendor;
 
   @ManyToOne(() => User, { nullable: false, deleteRule: 'cascade' })
-  user!: User;
+  user!: Rel<User>;
 
   constructor(data: ICreateSocial) {
     super();

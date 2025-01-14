@@ -14,8 +14,11 @@ export const EnvValidationSchema = Joi.object().keys({
   [ConfigEnv.DB_HOST_SLAVE]: Joi.required(),
   [ConfigEnv.DB_PORT_SLAVE]: Joi.number().required(),
 
-  [ConfigEnv.PASSWORD_SALT]: Joi.required(),
+  [ConfigEnv.ROUND_SALT]: Joi.number().required(),
   [ConfigEnv.CRYPTO_JS_SECRET_KEY]: Joi.required(),
+  [ConfigEnv.JWT_SECRET_KEY]: Joi.required(),
+  [ConfigEnv.JWT_REFRESH_SECRET_KEY]: Joi.required(),
+
   [ConfigEnv.API_DOCUMENTATION_INCLUSION]: Joi.boolean()
     .required()
     .default(false),

@@ -11,7 +11,6 @@ import { CustomBaseEntity } from '@/db/entities/custom-base.entity';
 import { UserStatus } from '@/users/enums/user-status.enum';
 import { Social } from '@/users/entities/social.entity';
 import { Membership } from '@/users/entities/membership.entity';
-import { ICreateSocial } from '@/users/interfaces/create-social.interface';
 import { ICreateUser } from '@/users/interfaces/create-user.interface';
 
 @Entity({ tableName: 'users' })

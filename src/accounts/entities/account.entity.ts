@@ -1,6 +1,7 @@
 import { CustomBaseEntity } from '@/db/entities/custom-base.entity';
 import { Entity, OneToMany, Opt, Property } from '@mikro-orm/core';
 import { Membership } from '@/users/entities/membership.entity';
+import { ICreateAccount } from '@/accounts/interfaces/create-account.interface';
 
 @Entity({ tableName: 'accounts' })
 export class Account extends CustomBaseEntity {
@@ -9,4 +10,9 @@ export class Account extends CustomBaseEntity {
 
   @OneToMany(() => Membership, (membership) => membership.account)
   memberships?: Membership[];
+
+  constructor(data: ICreateAccount) {
+    super();
+    Object.assign(this, data);
+  }
 }

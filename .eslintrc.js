@@ -22,5 +22,8 @@ module.exports = {
     '@typescript-eslint/explicit-module-boundary-types': 'off',
     '@typescript-eslint/no-explicit-any': 'off',
     '@typescript-eslint/no-empty-object-type': 'warn',
+    '@typescript-eslint/ban-ts-comment': 'off',
+    'no-console': 'error',
+    "max-len": ["error", {"code": 120}],
   },
 };

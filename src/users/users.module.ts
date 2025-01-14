@@ -7,9 +7,15 @@ import { Social } from '@/users/entities/social.entity';
 import { Membership } from '@/users/entities/membership.entity';
 import { SocialsService } from '@/users/services/socials.service';
 import { RolesService } from '@/users/services/roles.service';
+import { MembershipsService } from '@/users/services/memmberships.service';
+import { AccountsModule } from '@/accounts/accounts.module';
 
 @Module({
-  imports: [MikroOrmModule.forFeature([User, Role, Social, Membership])],
-  providers: [UsersService, RolesService, SocialsService],
+  imports: [
+    MikroOrmModule.forFeature({ entities: [User, Role, Social, Membership] }),
+    AccountsModule,
+  ],
+  providers: [UsersService, RolesService, SocialsService, MembershipsService],
+  exports: [UsersService, RolesService],
 })
 export class UsersModule {}

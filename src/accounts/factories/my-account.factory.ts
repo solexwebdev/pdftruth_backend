@@ -1,30 +1,38 @@
-import { Injectable } from '@nestjs/common';
 import { BaseResponseFactory } from '@/common/factories/base-response.factory';
 import { Account } from '@/accounts/entities/account.entity';
-import { AccountResponse } from '@/accounts/responses/account.response';
-import { ProfileFactory } from '@/users/factories/profile.factory';
 import { MyAccountResponse } from '@/accounts/responses/my-account.response';
+import { ProfileFactory } from '@/users/factories/profile.factory';
+import { Injectable } from '@nestjs/common';
 
 @Injectable()
-export class AccountFactory extends BaseResponseFactory<
+export class MyAccountFactory extends BaseResponseFactory<
   Account,
-  AccountResponse
+  MyAccountResponse
 > {
+  constructor(private readonly profileFactory: ProfileFactory) {
+    super();
+  }
   public createResponse(
     entity: Account,
-    options?: Record<string, undefined>,
-  ): MyAccountResponse | AccountResponse {
+    options?: Record<string, undefined> | undefined,
+  ): Promise<MyAccountResponse> | MyAccountResponse {
     const membership = entity.memberships?.find(
       (ms) => ms.account?.id === entity.id && ms.isDefault,
     );
 
-    return new AccountResponse({
+    return new MyAccountResponse({
       id: entity.id,
       name: entity.name,
       isDefault: !!membership,
       createdAt: entity.createdAt,
       updatedAt: entity.updatedAt,
       ...options,
+      ...(membership && {
+        profile: this.profileFactory.createResponse({
+          user: membership.user,
+          role: membership.role,
+        }),
+      }),
     });
   }
 }

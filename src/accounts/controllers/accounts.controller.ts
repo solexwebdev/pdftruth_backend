@@ -12,18 +12,21 @@ import {
   ApiTags,
 } from '@nestjs/swagger';
 import { BadRequestResponse } from '@/common/responses/bad-request.response';
-import { AccountResponse } from '@/accounts/responses/account.response';
 import { AccountFactory } from '@/accounts/factories/account.factory';
 import { AccountsFactory } from '@/accounts/factories/accounts.factory';
 import { AccountsResponse } from '@/accounts/responses/accounts.response';
 import { UpdateAccountDto } from '@/accounts/dto/update-account.dto';
 import { IdType } from '@/common/types/id.type';
+import { MyAccountFactory } from '@/accounts/factories/my-account.factory';
+import { MyAccountResponse } from '@/accounts/responses/my-account.response';
+
 @ApiTags('Accounts')
 @Controller('accounts')
 export class AccountsController {
   constructor(
     private readonly accountsService: AccountsService,
     private readonly accountFactory: AccountFactory,
+    private readonly myAccountFactory: MyAccountFactory,
     private readonly accountsFactory: AccountsFactory,
   ) {}
 
@@ -46,24 +49,24 @@ export class AccountsController {
 
   @ApiExcludeEndpoint(process.env.API_DOCUMENTATION_INCLUSION == 'true')
   @ApiOperation({ summary: 'Retrieve user default account' })
-  @ApiOkResponse({ type: AccountResponse })
+  @ApiOkResponse({ type: MyAccountResponse })
   @ApiForbiddenResponse()
   @ApiBadRequestResponse({ type: BadRequestResponse })
-  @Get('default')
+  @Get('my')
   @UserAuth()
   public async myAccount(
     @UserToken() tokenData: JwtTokenData,
-  ): Promise<AccountResponse> {
+  ): Promise<MyAccountResponse> {
     const account = await this.accountsService.getDefaultAccount(
       tokenData.user.id,
     );
 
-    return this.accountFactory.createResponse(account);
+    return this.myAccountFactory.createResponse(account);
   }
 
   @ApiExcludeEndpoint(process.env.API_DOCUMENTATION_INCLUSION == 'true')
   @ApiOperation({ summary: 'Update account' })
-  @ApiOkResponse({ type: AccountResponse })
+  @ApiOkResponse({ type: MyAccountResponse })
   @ApiForbiddenResponse()
   @ApiBadRequestResponse({ type: BadRequestResponse })
   @Patch(':accountId')
@@ -72,13 +75,13 @@ export class AccountsController {
     @Param('accountId') accountId: IdType,
     @Body() updateAccountDto: UpdateAccountDto,
     @UserToken() tokenData: JwtTokenData,
-  ): Promise<AccountResponse> {
+  ): Promise<MyAccountResponse> {
     const result = await this.accountsService.update({
       userId: tokenData.sub,
       accountId,
       updateAccountDto,
     });
 
-    return this.accountFactory.createResponse(result);
+    return this.myAccountFactory.createResponse(result);
   }
 }

@@ -6,10 +6,7 @@ module.exports = {
     sourceType: 'module',
   },
   plugins: ['@typescript-eslint/eslint-plugin'],
-  extends: [
-    'plugin:@typescript-eslint/recommended',
-    'plugin:prettier/recommended',
-  ],
+  extends: ['plugin:@typescript-eslint/recommended', 'plugin:prettier/recommended'],
   root: true,
   env: {
     node: true,
@@ -24,6 +21,6 @@ module.exports = {
     '@typescript-eslint/no-empty-object-type': 'warn',
     '@typescript-eslint/ban-ts-comment': 'off',
     'no-console': 'error',
-    "max-len": ["error", {"code": 120}],
+    'max-len': ['error', { code: 120 }],
   },
 };

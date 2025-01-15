@@ -8,6 +8,7 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { ConfigEnv } from '@/common/enums/config-env.enum';
 import { JwtAuthGuard } from '@/auth/guards/jwt-auth.guard';
 import { AuthResponseFactory } from '@/auth/factories/auth-response.factory';
+import { GoogleAuthClientService } from '@/auth/services/google-auth-client.service';
 
 @Module({
   imports: [
@@ -23,6 +24,11 @@ import { AuthResponseFactory } from '@/auth/factories/auth-response.factory';
     }),
   ],
   controllers: [AuthController],
-  providers: [AuthService, JwtAuthGuard, AuthResponseFactory],
+  providers: [
+    AuthService,
+    GoogleAuthClientService,
+    JwtAuthGuard,
+    AuthResponseFactory,
+  ],
 })
 export class AuthModule {}

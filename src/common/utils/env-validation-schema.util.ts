@@ -22,4 +22,8 @@ export const EnvValidationSchema = Joi.object().keys({
   [ConfigEnv.API_DOCUMENTATION_INCLUSION]: Joi.boolean()
     .required()
     .default(false),
+
+  [ConfigEnv.GOOGLE_CLIENT_ID]: Joi.required(),
+  [ConfigEnv.GOOGLE_CLIENT_SECRET]: Joi.required(),
+  [ConfigEnv.GOOGLE_REDIRECT_URL]: Joi.required(),
 });

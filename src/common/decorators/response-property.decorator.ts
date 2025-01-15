@@ -8,7 +8,7 @@ interface IResponseProperty<T> {
   nullable?: boolean;
   each?: boolean;
   cls?: ClsManageResponse<T> | null;
-  enum?: undefined;
+  enum?: object | undefined;
 }
 
 export function ResponseProperty<T>({

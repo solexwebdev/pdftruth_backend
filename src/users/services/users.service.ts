@@ -10,6 +10,8 @@ import { EventEmitter2 } from '@nestjs/event-emitter';
 import { UserEvent } from '@/users/enums/user-event.enum';
 import { SocialVendor } from '@/users/enums/social-vendor.enum';
 import { SocialsService } from '@/users/services/socials.service';
+import { CryptoUtilService } from '@/common/services/crypto-util.service';
+import { IUpdateUser } from '@/users/interfaces/update-user.interface';
 
 @Injectable()
 export class UsersService {
@@ -19,6 +21,7 @@ export class UsersService {
     private readonly em: EntityManager,
     private readonly eventEmitter: EventEmitter2,
     private readonly socialsService: SocialsService,
+    private readonly cryptoUtilService: CryptoUtilService,
   ) {}
 
   public async getById(id: IdType): Promise<User> {
@@ -38,6 +41,32 @@ export class UsersService {
 
   public async existByEmail(email: string): Promise<boolean> {
     return !!(await this.userRepository.count({ email }));
+  }
+
+  public async update(userId: IdType, options: IUpdateUser): Promise<void> {
+    const user = await this.getById(userId);
+
+    if (options?.password) {
+      if (!options.oldPassword)
+        throw new BadRequestException('Old password required.');
+
+      const compared = await this.cryptoUtilService.verifyPasswordHash(
+        options.oldPassword,
+        String(user.password),
+      );
+
+      if (!compared) throw new BadRequestException('Wrong old password.');
+
+      user.password = await this.cryptoUtilService.generatePasswordHash(
+        options.password,
+      );
+    }
+
+    user.nickname = options.nickname || user.nickname;
+    user.firstName = options.firstName || '';
+    user.lastName = options.lastName || '';
+
+    await this.em.flush();
   }
 
   public async register(payload: ICreateUser): Promise<User> {

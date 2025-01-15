@@ -12,6 +12,7 @@ import { UserStatus } from '@/users/enums/user-status.enum';
 import { Social } from '@/users/entities/social.entity';
 import { Membership } from '@/users/entities/membership.entity';
 import { ICreateUser } from '@/users/interfaces/create-user.interface';
+import { Exclude } from 'class-transformer';
 
 @Entity({ tableName: 'users' })
 export class User extends CustomBaseEntity {
@@ -19,6 +20,7 @@ export class User extends CustomBaseEntity {
   email!: string;
 
   @Property({ nullable: true, hidden: true })
+  @Exclude()
   password?: string;
 
   @Property({ nullable: true })

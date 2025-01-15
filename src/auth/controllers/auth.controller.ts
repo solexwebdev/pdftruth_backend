@@ -15,6 +15,7 @@ import { SignupDto } from '@/auth/dto/signup.dto';
 import { BadRequestResponse } from '@/common/responses/bad-request.response';
 import { RefreshTokenDto } from '@/auth/dto/refresh-token.dto';
 import { ResultResponse } from '@/common/responses/result.response';
+import { SignInGoogleDto } from '@/auth/dto/signin-google.dto';
 
 @ApiTags('Auth')
 @Controller('auth')
@@ -33,6 +34,22 @@ export class AuthController {
   @Post('signin')
   async signin(@Body() signinDto: SigninDto): Promise<JwtAuthResponse> {
     return this.authService.login(signinDto);
+  }
+
+  @ApiExcludeEndpoint(process.env.API_DOCUMENTATION_INCLUSION == 'true')
+  @ApiOperation({ summary: 'Sign in' })
+  @ApiBody({ type: SignInGoogleDto })
+  @ApiOkResponse({
+    type: JwtAuthResponse,
+    description: 'Success',
+  })
+  @ApiBadRequestResponse({ type: BadRequestResponse })
+  @HttpCode(HttpStatus.OK)
+  @Post('google')
+  async signinWithGoogle(
+    @Body() signInGoogleDto: SignInGoogleDto,
+  ): Promise<JwtAuthResponse> {
+    return this.authService.signInWithGoogle(signInGoogleDto);
   }
 
   @ApiExcludeEndpoint(process.env.API_DOCUMENTATION_INCLUSION == 'true')

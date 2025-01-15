@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { User } from '@/users/entities/user.entity';
 import { EntityRepository } from '@mikro-orm/postgresql';
 import { InjectRepository } from '@mikro-orm/nestjs';
@@ -8,6 +8,8 @@ import { EntityManager } from '@mikro-orm/postgresql';
 import { UserCreatedEvent } from '@/users/events/user-created.event';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 import { UserEvent } from '@/users/enums/user-event.enum';
+import { SocialVendor } from '@/users/enums/social-vendor.enum';
+import { SocialsService } from '@/users/services/socials.service';
 
 @Injectable()
 export class UsersService {
@@ -16,6 +18,7 @@ export class UsersService {
     private readonly userRepository: EntityRepository<User>,
     private readonly em: EntityManager,
     private readonly eventEmitter: EventEmitter2,
+    private readonly socialsService: SocialsService,
   ) {}
 
   public async getById(id: IdType): Promise<User> {
@@ -50,5 +53,42 @@ export class UsersService {
     this.eventEmitter.emit(UserEvent.Create, event);
 
     return user;
+  }
+
+  public async signInWithSocial(payload: {
+    vendor: SocialVendor;
+    sub: string;
+    email?: string;
+    name?: string;
+    firstName?: string;
+    lastName?: string;
+  }): Promise<User> {
+    const socialUser = await this.userRepository.findOne(
+      { socials: { sub: payload.sub } },
+      { populate: ['memberships.account', 'memberships.role', 'socials'] },
+    );
+
+    if (socialUser) return socialUser;
+
+    if (!payload.email)
+      throw new BadRequestException('Wrong social payload data.');
+
+    const userByEmail = await this.findByEmail(payload.email);
+    if (userByEmail) {
+      await this.socialsService.save({
+        user: userByEmail,
+        sub: payload.sub,
+        vendor: payload.vendor,
+      });
+
+      return userByEmail;
+    }
+
+    return await this.register({
+      email: payload.email,
+      nickname: payload.name,
+      firstName: payload.firstName,
+      lastName: payload.lastName,
+    });
   }
 }

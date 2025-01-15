@@ -17,6 +17,11 @@ import { ConfigEnv } from '@/common/enums/config-env.enum';
 import { IdType } from '@/common/types/id.type';
 import { AuthResponseFactory } from '@/auth/factories/auth-response.factory';
 import { ResultResponse } from '@/common/responses/result.response';
+import { GoogleAuthClientService } from '@/auth/services/google-auth-client.service';
+import { SignInGoogleDto } from '@/auth/dto/signin-google.dto';
+import { SocialVendor } from '@/users/enums/social-vendor.enum';
+import { UserStatus } from '@/users/enums/user-status.enum';
+import { UnprocessableEntityException } from '@nestjs/common/exceptions/unprocessable-entity.exception';
 
 @Injectable()
 export class AuthService {
@@ -26,6 +31,7 @@ export class AuthService {
     private readonly cryptoUtilService: CryptoUtilService,
     private readonly jwtService: JwtService,
     private readonly authResponseFactory: AuthResponseFactory,
+    private readonly googleAuthClientService: GoogleAuthClientService,
   ) {}
 
   public async checkUser(userId: IdType): Promise<boolean> {
@@ -35,15 +41,58 @@ export class AuthService {
 
   public async login(signinDto: SigninDto): Promise<JwtAuthResponse> {
     const user = await this.usersService.findByEmail(signinDto.email);
+
+    if (!user) throw new BadRequestException('Wrong email or password.');
+
+    if (!user?.password)
+      throw new BadRequestException('No password has been set.');
+
     const compared = await this.cryptoUtilService.verifyPasswordHash(
       signinDto.password,
       String(user?.password),
     );
 
-    if (!user || !compared)
-      throw new BadRequestException('Wrong email or password.');
+    if (!compared) throw new BadRequestException('Wrong email or password.');
+
+    if (user.status === UserStatus.INACTIVE)
+      throw new UnprocessableEntityException(
+        'Your access has been deactivated.',
+      );
 
     return await this.generateTokenPair(user);
+  }
+
+  public async signInWithGoogle(
+    payload: SignInGoogleDto,
+  ): Promise<JwtAuthResponse> {
+    try {
+      const tokenData = await this.googleAuthClientService.verifyCredentials({
+        code: payload.code,
+      });
+
+      const user = await this.usersService.signInWithSocial({
+        vendor: SocialVendor.GOOGLE,
+        sub: tokenData.sub,
+        email: tokenData.email,
+        name: tokenData.name,
+        firstName: tokenData.given_name,
+        lastName: tokenData.family_name,
+      });
+
+      if (user.status === UserStatus.INACTIVE)
+        throw new UnprocessableEntityException(
+          'Your access has been deactivated.',
+        );
+
+      return await this.generateTokenPair(user);
+    } catch (error) {
+      if (!(error instanceof BadRequestException))
+        throw new BadRequestException(error.message);
+
+      throw new BadRequestException(
+        'Process sign in with Google error, please try again later.',
+      );
+    }
   }
 
   public async signUp(signupDto: SignupDto): Promise<ResultResponse> {

@@ -1,9 +1,4 @@
-import {
-  CanActivate,
-  ExecutionContext,
-  Injectable,
-  UnauthorizedException,
-} from '@nestjs/common';
+import { CanActivate, ExecutionContext, Injectable, UnauthorizedException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import type { Request } from '@/common/types/request.type';
 import { logger } from '@mikro-orm/nestjs';
@@ -24,7 +19,6 @@ export class JwtAuthGuard implements CanActivate {
       request.tokenData = tokenData;
 
       return true;
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
     } catch (error) {
       logger.error(error);
       throw new UnauthorizedException('Authentication filed');

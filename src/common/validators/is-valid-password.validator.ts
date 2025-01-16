@@ -1,8 +1,4 @@
-import {
-  ValidationArguments,
-  ValidatorConstraint,
-  ValidatorConstraintInterface,
-} from 'class-validator';
+import { ValidationArguments, ValidatorConstraint, ValidatorConstraintInterface } from 'class-validator';
 
 @ValidatorConstraint({ name: 'IsStrongPassword', async: false })
 export class IsValidPasswordValidator implements ValidatorConstraintInterface {
@@ -21,6 +17,7 @@ export class IsValidPasswordValidator implements ValidatorConstraintInterface {
       /[@#$%^&*(),.?":{}|<>_-]/.test(password)
     );
   }
+
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   defaultMessage?(validationArguments?: ValidationArguments): string {
     return (

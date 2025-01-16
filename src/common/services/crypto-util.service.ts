@@ -14,15 +14,13 @@ export class CryptoUtilService {
   }
 
   public async generatePasswordHash(source: string): Promise<string> {
-    const salt = this.configService.get<string>(ConfigEnv.ROUND_SALT);
+    const round = this.configService.get<number>(ConfigEnv.ROUND_SALT);
 
-    return bcrypt.hash(source, 10);
+    // @ts-ignore
+    return bcrypt.hash(source, round);
   }
 
-  public async verifyPasswordHash(
-    source: string,
-    hash: string,
-  ): Promise<boolean> {
+  public async verifyPasswordHash(source: string, hash: string): Promise<boolean> {
     return bcrypt.compare(source, hash);
   }
 

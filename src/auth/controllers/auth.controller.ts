@@ -46,9 +46,7 @@ export class AuthController {
   @ApiBadRequestResponse({ type: BadRequestResponse })
   @HttpCode(HttpStatus.OK)
   @Post('google')
-  async signinWithGoogle(
-    @Body() signInGoogleDto: SignInGoogleDto,
-  ): Promise<JwtAuthResponse> {
+  async signinWithGoogle(@Body() signInGoogleDto: SignInGoogleDto): Promise<JwtAuthResponse> {
     return this.authService.signInWithGoogle(signInGoogleDto);
   }
 
@@ -62,9 +60,7 @@ export class AuthController {
   @ApiBadRequestResponse({ type: BadRequestResponse })
   @HttpCode(HttpStatus.OK)
   @Post('refresh-token')
-  async refreshToken(
-    @Body() refreshTokenDto: RefreshTokenDto,
-  ): Promise<JwtAuthResponse> {
+  async refreshToken(@Body() refreshTokenDto: RefreshTokenDto): Promise<JwtAuthResponse> {
     const { refreshToken } = refreshTokenDto;
     return this.authService.refreshToken(refreshToken);
   }

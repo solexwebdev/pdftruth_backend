@@ -1,8 +1,4 @@
-import {
-  BadRequestException,
-  Injectable,
-  NotAcceptableException,
-} from '@nestjs/common';
+import { BadRequestException, Injectable, NotAcceptableException } from '@nestjs/common';
 import { UsersService } from '@/users/services/users.service';
 import { ConfigService } from '@nestjs/config';
 import { SigninDto } from '@/auth/dto/signin.dto';
@@ -44,27 +40,19 @@ export class AuthService {
 
     if (!user) throw new BadRequestException('Wrong email or password.');
 
-    if (!user?.password)
-      throw new BadRequestException('No password has been set.');
+    if (!user?.password) throw new BadRequestException('No password has been set.');
 
-    const compared = await this.cryptoUtilService.verifyPasswordHash(
-      signinDto.password,
-      String(user?.password),
-    );
+    const compared = await this.cryptoUtilService.verifyPasswordHash(signinDto.password, String(user?.password));
 
     if (!compared) throw new BadRequestException('Wrong email or password.');
 
     if (user.status === UserStatus.INACTIVE)
-      throw new UnprocessableEntityException(
-        'Your access has been deactivated.',
-      );
+      throw new UnprocessableEntityException('Your access has been deactivated.');
 
     return await this.generateTokenPair(user);
   }
 
-  public async signInWithGoogle(
-    payload: SignInGoogleDto,
-  ): Promise<JwtAuthResponse> {
+  public async signInWithGoogle(payload: SignInGoogleDto): Promise<JwtAuthResponse> {
     try {
       const tokenData = await this.googleAuthClientService.verifyCredentials({
         code: payload.code,
@@ -80,18 +68,13 @@ export class AuthService {
       });
 
       if (user.status === UserStatus.INACTIVE)
-        throw new UnprocessableEntityException(
-          'Your access has been deactivated.',
-        );
+        throw new UnprocessableEntityException('Your access has been deactivated.');
 
       return await this.generateTokenPair(user);
     } catch (error) {
-      if (!(error instanceof BadRequestException))
-        throw new BadRequestException(error.message);
+      if (!(error instanceof BadRequestException)) throw new BadRequestException(error.message);
 
-      throw new BadRequestException(
-        'Process sign in with Google error, please try again later.',
-      );
+      throw new BadRequestException('Process sign in with Google error, please try again later.');
     }
   }
 
@@ -100,9 +83,7 @@ export class AuthService {
 
     if (existUser) throw new BadRequestException('User already exists.');
 
-    const passHash = await this.cryptoUtilService.generatePasswordHash(
-      signupDto.password,
-    );
+    const passHash = await this.cryptoUtilService.generatePasswordHash(signupDto.password);
 
     await this.usersService.register({
       email: signupDto.email,
@@ -137,10 +118,8 @@ export class AuthService {
     return this.authResponseFactory.createResponse({
       accessToken: accessToken,
       refreshToken: refreshToken,
-      accessTokenExpiresAt:
-        Date.now() + AuthModuleSetting.ACCESS_TOKEN_LIFETIME_MS,
-      refreshTokenExpiresAt:
-        Date.now() + AuthModuleSetting.REFRESH_TOKEN_LIFETIME_MS,
+      accessTokenExpiresAt: Date.now() + AuthModuleSetting.ACCESS_TOKEN_LIFETIME_MS,
+      refreshTokenExpiresAt: Date.now() + AuthModuleSetting.REFRESH_TOKEN_LIFETIME_MS,
     });
   }
 

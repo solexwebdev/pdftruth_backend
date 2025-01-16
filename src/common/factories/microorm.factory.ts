@@ -1,16 +1,11 @@
 import { ConfigService } from '@nestjs/config';
 import { ConfigEnv } from '@/common/enums/config-env.enum';
-import {
-  Options,
-  PostgreSqlDriver,
-  UnderscoreNamingStrategy,
-} from '@mikro-orm/postgresql';
+import { Options, PostgreSqlDriver, UnderscoreNamingStrategy } from '@mikro-orm/postgresql';
 import { Environment } from '@/common/enums/environment.enum';
 import { TsMorphMetadataProvider } from '@mikro-orm/reflection';
 
 export const microormFactory = (configService: ConfigService): Options => {
-  const isDevelopment =
-    configService.get(ConfigEnv.NODE_ENV) === Environment.Development;
+  const isDevelopment = configService.get(ConfigEnv.NODE_ENV) === Environment.Development;
 
   return {
     entities: ['dist/**/*.entity.js'],

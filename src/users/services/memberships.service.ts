@@ -30,20 +30,14 @@ export class MembershipsService {
     const account = await this.accountsService.save({ name: event.nickname });
     const roleOwner = await this.rolesService.findByName(RoleEnum.OWNER);
 
-    const membership = await this.save({
+    await this.save({
       user: { id: event.userId },
       role: roleOwner,
       account,
     });
-
-    console.log('membership:', membership);
   }
 
-  public async save(payload: {
-    user: Partial<User>;
-    account: Account;
-    role: Role;
-  }): Promise<Membership> {
+  public async save(payload: { user: Partial<User>; account: Account; role: Role }): Promise<Membership> {
     const membership = new Membership({
       ...(payload as ICreateMembership),
       isDefault: true,

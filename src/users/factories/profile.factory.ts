@@ -7,16 +7,14 @@ import { UserFactory } from '@/users/factories/user.factory';
 import { RoleFactory } from '@/users/factories/role.factory';
 
 @Injectable()
-export class ProfileFactory extends BaseResponseFactory<
-  { user: User; role: Role },
-  ProfileResponse
-> {
+export class ProfileFactory extends BaseResponseFactory<{ user: User; role: Role }, ProfileResponse> {
   constructor(
     private readonly userFactory: UserFactory,
     private readonly roleFactory: RoleFactory,
   ) {
     super();
   }
+
   createResponse(
     entity: { user: User; role: Role },
     options?: Record<string, undefined> | undefined,

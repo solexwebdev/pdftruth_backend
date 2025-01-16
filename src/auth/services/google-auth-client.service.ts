@@ -7,16 +7,13 @@ import { ConfigEnv } from '@/common/enums/config-env.enum';
 export class GoogleAuthClientService {
   private client = new OAuth2Client({
     clientId: this.configService.get<string>(ConfigEnv.GOOGLE_CLIENT_ID),
-    clientSecret: this.configService.get<string>(
-      ConfigEnv.GOOGLE_CLIENT_SECRET,
-    ),
+    clientSecret: this.configService.get<string>(ConfigEnv.GOOGLE_CLIENT_SECRET),
     redirectUri: this.configService.get<string>(ConfigEnv.GOOGLE_REDIRECT_URL),
   });
+
   constructor(private readonly configService: ConfigService) {}
 
-  public async verifyCredentials(payload: {
-    code: string;
-  }): Promise<TokenPayload> {
+  public async verifyCredentials(payload: { code: string }): Promise<TokenPayload> {
     const tokenResponse = await this.client.getToken(payload.code);
 
     const ticket = await this.client.verifyIdToken({
@@ -26,8 +23,7 @@ export class GoogleAuthClientService {
 
     const tokenPayload = ticket.getPayload();
 
-    if (!tokenPayload?.sub)
-      throw new NotAcceptableException('Wrong token payload data.');
+    if (!tokenPayload?.sub) throw new NotAcceptableException('Wrong token payload data.');
 
     return tokenPayload;
   }

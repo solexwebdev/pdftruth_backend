@@ -24,11 +24,6 @@ import { GoogleAuthClientService } from '@/auth/services/google-auth-client.serv
     }),
   ],
   controllers: [AuthController],
-  providers: [
-    AuthService,
-    GoogleAuthClientService,
-    JwtAuthGuard,
-    AuthResponseFactory,
-  ],
+  providers: [AuthService, GoogleAuthClientService, JwtAuthGuard, AuthResponseFactory],
 })
 export class AuthModule {}

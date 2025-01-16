@@ -9,17 +9,9 @@ import { UsersModule } from '@/users/users.module';
 import { MyAccountFactory } from '@/accounts/factories/my-account.factory';
 
 @Module({
-  imports: [
-    MikroOrmModule.forFeature([Account]),
-    forwardRef(() => UsersModule),
-  ],
+  imports: [MikroOrmModule.forFeature([Account]), forwardRef(() => UsersModule)],
   controllers: [AccountsController],
-  providers: [
-    AccountsService,
-    AccountFactory,
-    MyAccountFactory,
-    AccountsFactory,
-  ],
+  providers: [AccountsService, AccountFactory, MyAccountFactory, AccountsFactory],
   exports: [AccountsService],
 })
 export class AccountsModule {}

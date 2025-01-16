@@ -3,7 +3,7 @@ import { PrimaryKey, Property } from '@mikro-orm/core';
 import { IdType } from '@/common/types/id.type';
 
 export abstract class CustomBaseEntity {
-  @PrimaryKey()
+  @PrimaryKey({ columnType: 'uuid' })
   id: IdType = v4();
 
   @Property()

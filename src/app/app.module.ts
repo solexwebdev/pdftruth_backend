@@ -1,9 +1,4 @@
-import {
-  MiddlewareConsumer,
-  Module,
-  NestModule,
-  OnModuleInit,
-} from '@nestjs/common';
+import { MiddlewareConsumer, Module, NestModule, OnModuleInit } from '@nestjs/common';
 import { AppController } from './controllers/app.controller';
 import { AppService } from './services/app.service';
 import { MikroOrmMiddleware, MikroOrmModule } from '@mikro-orm/nestjs';
@@ -16,6 +11,9 @@ import { AuthModule } from '@/auth/auth.module';
 import { CommonModule } from '@/common/common.module';
 import { MikroORM } from '@mikro-orm/core';
 import { EventEmitterModule } from '@nestjs/event-emitter';
+import { VendorsModule } from '@/vendors/vendors.module';
+import { StorageModule } from '@/storage/storage.module';
+import { DocumentsModule } from '@/documents/documents.module';
 
 @Module({
   imports: [
@@ -33,6 +31,9 @@ import { EventEmitterModule } from '@nestjs/event-emitter';
     CommonModule,
     UsersModule,
     AccountsModule,
+    VendorsModule,
+    StorageModule,
+    DocumentsModule,
   ],
   controllers: [AppController],
   providers: [AppService],

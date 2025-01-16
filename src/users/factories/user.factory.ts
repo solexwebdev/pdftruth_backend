@@ -5,10 +5,7 @@ import { Injectable } from '@nestjs/common';
 
 @Injectable()
 export class UserFactory extends BaseResponseFactory<User, UserResponse> {
-  createResponse(
-    entity: User,
-    options?: Record<string, undefined> | undefined,
-  ): UserResponse | Promise<UserResponse> {
+  createResponse(entity: User, options?: Record<string, undefined> | undefined): UserResponse | Promise<UserResponse> {
     return new UserResponse({
       id: entity.id,
       nickname: entity.nickname,
@@ -16,7 +13,7 @@ export class UserFactory extends BaseResponseFactory<User, UserResponse> {
       firstName: entity.firstName,
       lastName: entity.lastName,
       status: entity.status,
-      isEmailConfirmed: !!entity.isEmailConfirmed,
+      isEmailConfirmed: !entity.emailConfirmationToken,
       createdAt: entity.createdAt,
       ...options,
     });

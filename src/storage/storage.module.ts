@@ -7,5 +7,6 @@ import { StorageItem } from '@/storage/entities/storage-item.entity';
 @Module({
   imports: [MikroOrmModule.forFeature({ entities: [StorageItem] }), VendorsModule],
   providers: [StorageService],
+  exports: [StorageService],
 })
 export class StorageModule {}

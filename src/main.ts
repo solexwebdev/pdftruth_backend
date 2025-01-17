@@ -5,6 +5,7 @@ import { ConfigEnv } from '@/common/enums/config-env.enum';
 import { useSwagger } from '@/app/global-middlewares/useSwagger';
 import { useValidation } from '@/app/global-middlewares/useValidation';
 import { useCors } from '@/app/global-middlewares/useCors';
+import { useExceptionFilters } from '@/app/global-middlewares/useExceptionFilters';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -14,6 +15,7 @@ async function bootstrap() {
   useSwagger(app, configService);
   useValidation(app, configService);
   useCors(app);
+  useExceptionFilters(app);
 
   await app.listen(port);
 }

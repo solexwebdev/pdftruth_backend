@@ -37,11 +37,8 @@ services:
       - MINIO_DOMAIN=s3.us-east-1.amazonaws.com
     networks:
       - webnet
-#      default:
-#        aliases:
-#          - pdftruth.s3.us-east-1.amazonaws.com
     volumes:
-      - ./data:/data
+      - ./docker/minio/data:/data
     command: server /data --console-address ":9001" --address ":9000"
 
   pdftruth_db_slave:

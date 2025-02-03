@@ -28,6 +28,10 @@ export class UsersService {
     return this.userRepository.findOneOrFail({ id });
   }
 
+  public async hasAccountAccess(userId: IdType, accountId: IdType): Promise<boolean> {
+    return !!(await this.userRepository.findOneOrFail({ id: userId, memberships: { account: { id: accountId } } }));
+  }
+
   public async findByEmail(email: string): Promise<User | null> {
     return this.userRepository.findOne({ email }, { populate: ['memberships.account', 'memberships.role', 'socials'] });
   }

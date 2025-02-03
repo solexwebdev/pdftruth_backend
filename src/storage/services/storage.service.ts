@@ -64,6 +64,6 @@ export class StorageService {
       })),
     );
 
-    await this.storageItemRepository.nativeDelete({ id: ids });
+    await this.storageItemRepository.nativeDelete({ id: { $in: ids } });
   }
 }

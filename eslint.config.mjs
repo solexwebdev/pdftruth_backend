@@ -47,6 +47,7 @@ export default [{
         "@typescript-eslint/explicit-module-boundary-types": "off",
         "@typescript-eslint/no-empty-object-type": "warn",
         "@typescript-eslint/ban-ts-comment": "off",
+        "@typescript-eslint/no-unused-vars": "warn",
         "no-console": ["error", { allow: ["warn", "error"] }],
         "@typescript-eslint/no-explicit-any": ["warn", { ignoreRestArgs: true }],
         "prettier/prettier": "error",

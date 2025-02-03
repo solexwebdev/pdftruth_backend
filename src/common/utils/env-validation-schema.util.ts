@@ -29,4 +29,7 @@ export const EnvValidationSchema = Joi.object().keys({
   [ConfigEnv.AWS_S3_SECRET]: Joi.required(),
   [ConfigEnv.AWS_S3_REGION]: Joi.required(),
   [ConfigEnv.AWS_S3_BUCKET]: Joi.required(),
+
+  [ConfigEnv.MINIO_HOST]: Joi.optional().default('http://minio:9000'),
+  [ConfigEnv.UPLOAD_MAX_FILE_SIZE]: Joi.number().required(),
 });

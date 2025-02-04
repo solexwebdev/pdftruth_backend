@@ -4,10 +4,10 @@ RUN apk add --no-cache bash
 
 WORKDIR /home/node/app
 
-COPY package*.json ./
+COPY package*.json yarn.lock ./
 
 RUN yarn cache clean
 RUN rm -rf node_modules
-RUN yarn install
+RUN yarn install --frozen-lockfile
 
 COPY . .

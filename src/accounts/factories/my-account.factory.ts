@@ -5,20 +5,16 @@ import { ProfileFactory } from '@/users/factories/profile.factory';
 import { Injectable } from '@nestjs/common';
 
 @Injectable()
-export class MyAccountFactory extends BaseResponseFactory<
-  Account,
-  MyAccountResponse
-> {
+export class MyAccountFactory extends BaseResponseFactory<Account, MyAccountResponse> {
   constructor(private readonly profileFactory: ProfileFactory) {
     super();
   }
+
   public createResponse(
     entity: Account,
     options?: Record<string, undefined> | undefined,
   ): Promise<MyAccountResponse> | MyAccountResponse {
-    const membership = entity.memberships?.find(
-      (ms) => ms.account?.id === entity.id && ms.isDefault,
-    );
+    const membership = entity.memberships?.find((ms) => ms.account?.id === entity.id && ms.isDefault);
 
     return new MyAccountResponse({
       id: entity.id,

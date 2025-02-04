@@ -33,16 +33,12 @@ export class AccountsController {
   @ApiExcludeEndpoint(process.env.API_DOCUMENTATION_INCLUSION == 'true')
   @ApiOperation({ summary: 'Retrieve all accounts for user' })
   @ApiOkResponse({ type: AccountsResponse })
-  @ApiForbiddenResponse()
+  @ApiForbiddenResponse({ description: 'UNAUTHORIZED_REQUEST' })
   @ApiBadRequestResponse({ type: BadRequestResponse })
   @Get()
   @UserAuth()
-  public async myAccounts(
-    @UserToken() tokenData: JwtTokenData,
-  ): Promise<AccountsResponse> {
-    const accounts = await this.accountsService.getUserAccounts(
-      tokenData.user.id,
-    );
+  public async myAccounts(@UserToken() tokenData: JwtTokenData): Promise<AccountsResponse> {
+    const accounts = await this.accountsService.getUserAccounts(tokenData.user.id);
 
     return this.accountsFactory.createResponse(accounts);
   }
@@ -50,16 +46,12 @@ export class AccountsController {
   @ApiExcludeEndpoint(process.env.API_DOCUMENTATION_INCLUSION == 'true')
   @ApiOperation({ summary: 'Retrieve user default account' })
   @ApiOkResponse({ type: MyAccountResponse })
-  @ApiForbiddenResponse()
+  @ApiForbiddenResponse({ description: 'UNAUTHORIZED_REQUEST' })
   @ApiBadRequestResponse({ type: BadRequestResponse })
   @Get('my')
   @UserAuth()
-  public async myAccount(
-    @UserToken() tokenData: JwtTokenData,
-  ): Promise<MyAccountResponse> {
-    const account = await this.accountsService.getDefaultAccount(
-      tokenData.user.id,
-    );
+  public async myAccount(@UserToken() tokenData: JwtTokenData): Promise<MyAccountResponse> {
+    const account = await this.accountsService.getDefaultAccount(tokenData.user.id);
 
     return this.myAccountFactory.createResponse(account);
   }
@@ -67,7 +59,7 @@ export class AccountsController {
   @ApiExcludeEndpoint(process.env.API_DOCUMENTATION_INCLUSION == 'true')
   @ApiOperation({ summary: 'Update account' })
   @ApiOkResponse({ type: MyAccountResponse })
-  @ApiForbiddenResponse()
+  @ApiForbiddenResponse({ description: 'UNAUTHORIZED_REQUEST' })
   @ApiBadRequestResponse({ type: BadRequestResponse })
   @Patch(':accountId')
   @UserAuth()

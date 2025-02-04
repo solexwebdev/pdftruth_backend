@@ -28,11 +28,12 @@ export class UsersService {
     return this.userRepository.findOneOrFail({ id });
   }
 
+  public async hasAccountAccess(userId: IdType, accountId: IdType): Promise<boolean> {
+    return !!(await this.userRepository.findOneOrFail({ id: userId, memberships: { account: { id: accountId } } }));
+  }
+
   public async findByEmail(email: string): Promise<User | null> {
-    return this.userRepository.findOne(
-      { email },
-      { populate: ['memberships.account', 'memberships.role', 'socials'] },
-    );
+    return this.userRepository.findOne({ email }, { populate: ['memberships.account', 'memberships.role', 'socials'] });
   }
 
   public async getByEmail(email: string): Promise<User> {
@@ -47,19 +48,13 @@ export class UsersService {
     const user = await this.getById(userId);
 
     if (options?.password) {
-      if (!options.oldPassword)
-        throw new BadRequestException('Old password required.');
+      if (!options.oldPassword) throw new BadRequestException('Old password required.');
 
-      const compared = await this.cryptoUtilService.verifyPasswordHash(
-        options.oldPassword,
-        String(user.password),
-      );
+      const compared = await this.cryptoUtilService.verifyPasswordHash(options.oldPassword, String(user.password));
 
       if (!compared) throw new BadRequestException('Wrong old password.');
 
-      user.password = await this.cryptoUtilService.generatePasswordHash(
-        options.password,
-      );
+      user.password = await this.cryptoUtilService.generatePasswordHash(options.password);
     }
 
     user.nickname = options.nickname || user.nickname;
@@ -70,9 +65,7 @@ export class UsersService {
   }
 
   public async register(payload: ICreateUser): Promise<User> {
-    const nickname = payload.nickname
-      ? payload.nickname
-      : payload.email.split('@')[0];
+    const nickname = payload.nickname ? payload.nickname : payload.email.split('@')[0];
 
     const user = new User({ ...(payload as ICreateUser), nickname });
 
@@ -99,8 +92,7 @@ export class UsersService {
 
     if (socialUser) return socialUser;
 
-    if (!payload.email)
-      throw new BadRequestException('Wrong social payload data.');
+    if (!payload.email) throw new BadRequestException('Wrong social payload data.');
 
     const userByEmail = await this.findByEmail(payload.email);
     if (userByEmail) {

@@ -1,19 +1,10 @@
-import {
-  BadRequestException,
-  INestApplication,
-  ValidationError,
-  ValidationPipe,
-} from '@nestjs/common';
+import { BadRequestException, INestApplication, ValidationError, ValidationPipe } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { ConfigEnv } from '@/common/enums/config-env.enum';
 import { Environment } from '@/common/enums/environment.enum';
 
-export const useValidation = (
-  app: INestApplication,
-  configService: ConfigService,
-): void => {
-  const isProduction =
-    configService.get(ConfigEnv.NODE_ENV) === Environment.Production;
+export const useValidation = (app: INestApplication, configService: ConfigService): void => {
+  const isProduction = configService.get(ConfigEnv.NODE_ENV) === Environment.Production;
 
   app.useGlobalPipes(
     new ValidationPipe({
@@ -27,14 +18,9 @@ export const useValidation = (
         ): Array<{ property: string; errors: string[] }> => {
           const errors: { property: string; errors: string[] }[] = [];
 
-          const getValidationErrorsRecursively = (
-            validationErrors: ValidationError[],
-            parentProperty = '',
-          ) => {
+          const getValidationErrorsRecursively = (validationErrors: ValidationError[], parentProperty = '') => {
             for (const error of validationErrors) {
-              const propertyPath = parentProperty
-                ? `${parentProperty}.${error.property}`
-                : error.property;
+              const propertyPath = parentProperty ? `${parentProperty}.${error.property}` : error.property;
 
               if (error.constraints) {
                 errors.push({

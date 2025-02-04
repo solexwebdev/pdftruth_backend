@@ -19,11 +19,17 @@ export const EnvValidationSchema = Joi.object().keys({
   [ConfigEnv.JWT_SECRET_KEY]: Joi.required(),
   [ConfigEnv.JWT_REFRESH_SECRET_KEY]: Joi.required(),
 
-  [ConfigEnv.API_DOCUMENTATION_INCLUSION]: Joi.boolean()
-    .required()
-    .default(false),
+  [ConfigEnv.API_DOCUMENTATION_INCLUSION]: Joi.boolean().required().default(false),
 
   [ConfigEnv.GOOGLE_CLIENT_ID]: Joi.required(),
   [ConfigEnv.GOOGLE_CLIENT_SECRET]: Joi.required(),
   [ConfigEnv.GOOGLE_REDIRECT_URL]: Joi.required(),
+
+  [ConfigEnv.AWS_S3_KEY_ID]: Joi.required(),
+  [ConfigEnv.AWS_S3_SECRET]: Joi.required(),
+  [ConfigEnv.AWS_S3_REGION]: Joi.required(),
+  [ConfigEnv.AWS_S3_BUCKET]: Joi.required(),
+
+  [ConfigEnv.MINIO_HOST]: Joi.optional().default('http://minio:9000'),
+  [ConfigEnv.UPLOAD_MAX_FILE_SIZE]: Joi.number().required(),
 });

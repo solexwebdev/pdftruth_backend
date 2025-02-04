@@ -2,21 +2,12 @@ import { Injectable } from '@nestjs/common';
 import { BaseResponseFactory } from '@/common/factories/base-response.factory';
 import { Account } from '@/accounts/entities/account.entity';
 import { AccountResponse } from '@/accounts/responses/account.response';
-import { ProfileFactory } from '@/users/factories/profile.factory';
 import { MyAccountResponse } from '@/accounts/responses/my-account.response';
 
 @Injectable()
-export class AccountFactory extends BaseResponseFactory<
-  Account,
-  AccountResponse
-> {
-  public createResponse(
-    entity: Account,
-    options?: Record<string, undefined>,
-  ): MyAccountResponse | AccountResponse {
-    const membership = entity.memberships?.find(
-      (ms) => ms.account?.id === entity.id && ms.isDefault,
-    );
+export class AccountFactory extends BaseResponseFactory<Account, AccountResponse> {
+  public createResponse(entity: Account, options?: Record<string, undefined>): MyAccountResponse | AccountResponse {
+    const membership = entity.memberships?.find((ms) => ms.account?.id === entity.id && ms.isDefault);
 
     return new AccountResponse({
       id: entity.id,

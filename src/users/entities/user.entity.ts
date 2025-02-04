@@ -1,12 +1,4 @@
-import {
-  Collection,
-  Entity,
-  Enum,
-  Index,
-  OneToMany,
-  Opt,
-  Property,
-} from '@mikro-orm/core';
+import { Collection, Entity, Enum, Index, OneToMany, Opt, Property } from '@mikro-orm/core';
 import { CustomBaseEntity } from '@/db/entities/custom-base.entity';
 import { UserStatus } from '@/users/enums/user-status.enum';
 import { Social } from '@/users/entities/social.entity';
@@ -37,8 +29,8 @@ export class User extends CustomBaseEntity {
     return `${this.firstName} ${this.lastName}`?.trim();
   }
 
-  @Property({ nullable: false, default: false, type: 'boolean' })
-  isEmailConfirmed!: string;
+  @Property({ nullable: true })
+  emailConfirmationToken!: string;
 
   @Enum({ items: () => UserStatus, default: UserStatus.ACTIVE })
   status!: UserStatus;

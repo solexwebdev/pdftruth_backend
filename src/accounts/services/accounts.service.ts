@@ -6,6 +6,7 @@ import { ICreateAccount } from '@/accounts/interfaces/create-account.interface';
 import { IdType } from '@/common/types/id.type';
 import { UpdateAccountDto } from '@/accounts/dto/update-account.dto';
 import { UsersService } from '@/users/services/users.service';
+
 @Injectable()
 export class AccountsService {
   constructor(

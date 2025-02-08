@@ -11,11 +11,11 @@ export class DocumentFactory extends BaseResponseFactory<Document, DocumentRespo
   }
 
   public async createResponse(entity: Document, options?: Record<string, undefined>): Promise<DocumentResponse> {
-    const url = await this.storageService.getStorageItemUrl(entity.file);
+    const url = entity?.file ? await this.storageService.getStorageItemUrl(entity?.file) : null;
     return new DocumentResponse({
       id: entity.id,
       name: entity.name,
-      size: entity.file?.size,
+      size: entity.file?.size || 0,
       url,
       createdAt: entity.createdAt,
     });

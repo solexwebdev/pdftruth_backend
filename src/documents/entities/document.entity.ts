@@ -1,8 +1,9 @@
 import { CustomBaseEntity } from '@/db/entities/custom-base.entity';
-import { Entity, ManyToOne, OneToOne, Property } from '@mikro-orm/core';
+import { Entity, ManyToOne, OneToMany, OneToOne, Property } from '@mikro-orm/core';
 import { StorageItem } from '@/storage/entities/storage-item.entity';
 import { Account } from '@/accounts/entities/account.entity';
 import { ICreateDocument } from '@/documents/interfaces/create-document.interface';
+import { Enquiry } from '@/enquiries/entities/enquiry.entity';
 
 @Entity({ tableName: 'documents' })
 export class Document extends CustomBaseEntity {
@@ -12,8 +13,11 @@ export class Document extends CustomBaseEntity {
   @ManyToOne(() => Account, { nullable: false, deleteRule: 'cascade' })
   account!: Account;
 
-  @OneToOne()
-  file!: StorageItem;
+  @OneToOne({ nullable: true, deleteRule: 'set null' })
+  file?: StorageItem | null;
+
+  @OneToMany(() => Enquiry, (enquiry) => enquiry.document)
+  enquiries?: Enquiry[];
 
   constructor(data: ICreateDocument) {
     super();

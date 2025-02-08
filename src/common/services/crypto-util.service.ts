@@ -4,6 +4,7 @@ import { nanoid } from 'nanoid';
 import * as bcrypt from 'bcrypt';
 import { ConfigEnv } from '@/common/enums/config-env.enum';
 import CryptoJS from 'crypto-js';
+import * as crypto from 'crypto';
 
 @Injectable()
 export class CryptoUtilService {
@@ -11,6 +12,10 @@ export class CryptoUtilService {
 
   public generateUUID(size = 6): string {
     return nanoid(size);
+  }
+
+  public getFileSha256Hash(fileBuffer: Buffer): string {
+    return crypto.createHash('sha256').update(fileBuffer).digest('hex');
   }
 
   public async generatePasswordHash(source: string): Promise<string> {

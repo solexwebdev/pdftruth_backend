@@ -12,5 +12,6 @@ import { DocumentsFactory } from '@/documents/factories/documents.factory';
   imports: [MikroOrmModule.forFeature([Document]), StorageModule, UsersModule],
   controllers: [DocumentsController],
   providers: [DocumentsService, DocumentFactory, DocumentsFactory],
+  exports: [DocumentsService],
 })
 export class DocumentsModule {}

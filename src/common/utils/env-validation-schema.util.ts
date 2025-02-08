@@ -32,4 +32,9 @@ export const EnvValidationSchema = Joi.object().keys({
 
   [ConfigEnv.MINIO_HOST]: Joi.optional().default('http://minio:9000'),
   [ConfigEnv.UPLOAD_MAX_FILE_SIZE]: Joi.number().required(),
+
+  [ConfigEnv.ENQUIRY_HASH_ENABLED]: Joi.boolean().required(),
+  [ConfigEnv.ENQUIRY_METADATA_ENABLED]: Joi.boolean().required(),
+  [ConfigEnv.ENQUIRY_SIGNATURE_ENABLED]: Joi.boolean().required(),
+  [ConfigEnv.ENQUIRY_VALID_PDFA_ENABLED]: Joi.boolean().required(),
 });

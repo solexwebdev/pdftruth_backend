@@ -11,8 +11,8 @@ export class DocumentResponse extends BaseResponse {
   @ResponseProperty({ cls: Number })
   size: number;
 
-  @ResponseProperty({ cls: String })
-  url: string;
+  @ResponseProperty({ cls: String, nullable: true })
+  url: string | null;
 
   @ResponseProperty({ cls: Date })
   createdAt: Date;

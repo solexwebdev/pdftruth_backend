@@ -14,6 +14,7 @@ import { EventEmitterModule } from '@nestjs/event-emitter';
 import { VendorsModule } from '@/vendors/vendors.module';
 import { StorageModule } from '@/storage/storage.module';
 import { DocumentsModule } from '@/documents/documents.module';
+import { EnquiriesModule } from '@/enquiries/enquiries.module';
 
 @Module({
   imports: [
@@ -34,6 +35,7 @@ import { DocumentsModule } from '@/documents/documents.module';
     VendorsModule,
     StorageModule,
     DocumentsModule,
+    EnquiriesModule,
   ],
   controllers: [AppController],
   providers: [AppService],

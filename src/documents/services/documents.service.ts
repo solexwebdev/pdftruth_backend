@@ -7,6 +7,9 @@ import { StorageService } from '@/storage/services/storage.service';
 import { IdType } from '@/common/types/id.type';
 import { BucketStoragePathEnum } from '@/storage/enums/bucket-storage-path.enum';
 import { DocumentsQueryDto } from '@/documents/dto/documents-query.dto';
+import { EventEmitter2 } from '@nestjs/event-emitter';
+import { DocumentCreatedEvent } from '@/documents/events/document-created.event';
+import { DocumentEvent } from '@/documents/enums/document-event.enum';
 
 @Injectable()
 export class DocumentsService {
@@ -15,6 +18,7 @@ export class DocumentsService {
     private readonly documentRepository: EntityRepository<Document>,
     private readonly em: EntityManager,
     private readonly storageService: StorageService,
+    private readonly eventEmitter: EventEmitter2,
   ) {}
 
   public async create(payload: { accountId: IdType; file: Express.Multer.File; userId?: IdType }): Promise<Document> {
@@ -32,6 +36,9 @@ export class DocumentsService {
     document.file = storageItem;
 
     await this.em.persistAndFlush(document);
+
+    const event = new DocumentCreatedEvent(document.id);
+    this.eventEmitter.emit(DocumentEvent.Create, event);
 
     return document;
   }
@@ -58,9 +65,9 @@ export class DocumentsService {
     return [entities, count];
   }
 
-  public async getAccountDocument(payload: { id: IdType; accountId: IdType }): Promise<Document> {
+  public async getAccountDocument(payload: { id: IdType; accountId?: IdType }): Promise<Document> {
     return await this.documentRepository.findOneOrFail(
-      { id: payload.id, account: { id: payload.accountId } },
+      { id: payload.id, ...(payload.accountId && { account: { id: payload.accountId } }) },
       { populate: ['account', 'file'] },
     );
   }
@@ -73,9 +80,9 @@ export class DocumentsService {
 
     if (!documents.length) return 0;
 
-    const storageItemIds = documents.map((document) => document.file?.id).filter((id) => id !== null);
+    const storageItemIds = documents.map((document) => document.file?.id).filter((id) => id != null);
 
-    await this.storageService.bulkDelete(storageItemIds);
+    if (storageItemIds.length) await this.storageService.bulkDelete(storageItemIds);
 
     return await this.documentRepository.nativeDelete({ id: { $in: documents.map((document) => document.id) } });
   }

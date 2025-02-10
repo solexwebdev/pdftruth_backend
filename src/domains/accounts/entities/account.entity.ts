@@ -1,8 +1,9 @@
 import { CustomBaseEntity } from '@/db/entities/custom-base.entity';
-import { Entity, OneToMany, Opt, Property } from '@mikro-orm/core';
+import { Collection, Entity, ManyToMany, OneToMany, Opt, Property } from '@mikro-orm/core';
 import { Membership } from '@/domains/users/entities/membership.entity';
 import { ICreateAccount } from '@/domains/accounts/interfaces/create-account.interface';
 import { Document } from '@/domains/documents/entities/document.entity';
+import { Tag } from '@/domains/tags/entity/tag.entity';
 
 @Entity({ tableName: 'accounts' })
 export class Account extends CustomBaseEntity {
@@ -14,6 +15,9 @@ export class Account extends CustomBaseEntity {
 
   @OneToMany(() => Document, (document) => document.account)
   documents: Document[];
+
+  @ManyToMany(() => Tag, (tag) => tag.accounts)
+  tags = new Collection<Tag>(this);
 
   constructor(data: ICreateAccount) {
     super();

@@ -34,6 +34,15 @@ export class AccountsService {
     return account;
   }
 
+  public async getById(accountId: IdType): Promise<Account> {
+    const account = await this.accountRepository.findOneOrFail(
+      { id: accountId },
+      { populate: ['memberships.role', 'memberships.user'] },
+    );
+
+    return account;
+  }
+
   public async save(payload: ICreateAccount): Promise<Account> {
     const account = new Account({ ...(payload as ICreateAccount) });
     await this.em.persistAndFlush(account);

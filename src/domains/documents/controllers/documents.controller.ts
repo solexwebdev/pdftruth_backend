@@ -1,5 +1,6 @@
 import {
   BadRequestException,
+  Body,
   Controller,
   Delete,
   FileTypeValidator,
@@ -14,6 +15,7 @@ import {
 } from '@nestjs/common';
 import {
   ApiBadRequestResponse,
+  ApiBody,
   ApiConsumes,
   ApiExcludeEndpoint,
   ApiForbiddenResponse,
@@ -38,9 +40,10 @@ import { ResultResponse } from '@/common/responses/result.response';
 import { DocumentsFactory } from '@/domains/documents/factories/documents.factory';
 import { PaginateMetaResponse } from '@/common/responses/paginate-meta.response';
 import { DocumentsResponse } from '@/domains/documents/responses/documents.response';
+import { DocumentTagsDto } from '@/domains/documents/dto/document-tags.dto';
 
 @ApiTags('Documents')
-@Controller()
+@Controller('accounts/:accountId/documents')
 export class DocumentsController {
   constructor(
     private readonly documentsService: DocumentsService,
@@ -58,7 +61,7 @@ export class DocumentsController {
   @ApiConsumes('multipart/form-data')
   @UploadFile('file')
   @UseInterceptors(FileInterceptor('file'))
-  @Post(':accountId/documents')
+  @Post()
   @UserAuth()
   public async save(
     @Param('accountId') accountId: IdType,
@@ -92,7 +95,7 @@ export class DocumentsController {
   @ApiOkResponse({ type: DocumentsResponse })
   @ApiForbiddenResponse({ description: 'UNAUTHORIZED_REQUEST' })
   @ApiBadRequestResponse({ type: BadRequestResponse })
-  @Get(':accountId/documents')
+  @Get()
   @UserAuth()
   public async fetch(
     @Param('accountId') accountId: IdType,
@@ -117,16 +120,16 @@ export class DocumentsController {
   @ApiOkResponse({ type: DocumentResponse })
   @ApiForbiddenResponse({ description: 'UNAUTHORIZED_REQUEST' })
   @ApiBadRequestResponse({ type: BadRequestResponse })
-  @Get(':accountId/documents/:id')
+  @Get(':documentId')
   @UserAuth()
   public async get(
     @Param('accountId') accountId: IdType,
-    @Param('id') id: IdType,
+    @Param('documentId') documentId: IdType,
     @UserToken() tokenData: JwtTokenData,
   ): Promise<DocumentResponse> {
     await this.usersService.hasAccountAccess(tokenData.sub, accountId);
 
-    const document = await this.documentsService.getAccountDocument({ accountId, id });
+    const document = await this.documentsService.getAccountDocument({ accountId, id: documentId });
 
     return await this.documentFactory.createResponse(document);
   }
@@ -136,17 +139,38 @@ export class DocumentsController {
   @ApiOkResponse({ type: ResultResponse })
   @ApiForbiddenResponse({ description: 'UNAUTHORIZED_REQUEST' })
   @ApiBadRequestResponse({ type: BadRequestResponse })
-  @Delete(':accountId/documents/:id')
+  @Delete(':documentId')
   @UserAuth()
   public async delete(
     @Param('accountId') accountId: IdType,
-    @Param('id') id: IdType,
+    @Param('documentId') documentId: IdType,
     @UserToken() tokenData: JwtTokenData,
   ): Promise<ResultResponse> {
     await this.usersService.hasAccountAccess(tokenData.sub, accountId);
 
-    const result = await this.documentsService.delete({ accountId, ids: [id] });
+    const result = await this.documentsService.delete({ accountId, ids: [documentId] });
 
     return new ResultResponse({ message: `Deleted successfully ${result} document.` });
+  }
+
+  @ApiExcludeEndpoint(process.env.API_DOCUMENTATION_INCLUSION == 'true')
+  @ApiOperation({ summary: 'Add tags to the document.' })
+  @ApiBody({ type: DocumentTagsDto })
+  @ApiOkResponse({ type: ResultResponse })
+  @ApiForbiddenResponse({ description: 'UNAUTHORIZED_REQUEST' })
+  @ApiBadRequestResponse({ type: BadRequestResponse })
+  @Post(':documentId/tags')
+  @UserAuth()
+  public async addTags(
+    @Param('accountId') accountId: IdType,
+    @Param('documentId') documentId: IdType,
+    @Body() body: DocumentTagsDto,
+    @UserToken() tokenData: JwtTokenData,
+  ): Promise<ResultResponse> {
+    await this.usersService.hasAccountAccess(tokenData.sub, accountId);
+
+    const result = await this.documentsService.addTags({ accountId, documentId, tagIds: body.tagIds });
+
+    return new ResultResponse({ message: `Added ${result} tags successfully.` });
   }
 }

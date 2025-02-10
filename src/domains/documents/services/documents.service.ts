@@ -10,6 +10,7 @@ import { DocumentsQueryDto } from '@/domains/documents/dto/documents-query.dto';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 import { DocumentCreatedEvent } from '@/domains/documents/events/document-created.event';
 import { DocumentEvent } from '@/domains/documents/enums/document-event.enum';
+import { TagsService } from '@/domains/tags/services/tags.service';
 
 @Injectable()
 export class DocumentsService {
@@ -19,6 +20,7 @@ export class DocumentsService {
     private readonly em: EntityManager,
     private readonly storageService: StorageService,
     private readonly eventEmitter: EventEmitter2,
+    private readonly tagsService: TagsService,
   ) {}
 
   public async create(payload: { accountId: IdType; file: Express.Multer.File; userId?: IdType }): Promise<Document> {
@@ -52,6 +54,7 @@ export class DocumentsService {
       .where({ account: { id: payload.accountId } })
       .leftJoinAndSelect('account', 'account')
       .leftJoinAndSelect('file', 'file')
+      .leftJoinAndSelect('tags', 'tags')
       .orderBy({ createdAt: payload.query.order })
       .limit(payload.query.take)
       .offset(payload.query.skip);
@@ -68,7 +71,7 @@ export class DocumentsService {
   public async getAccountDocument(payload: { id: IdType; accountId?: IdType }): Promise<Document> {
     return await this.documentRepository.findOneOrFail(
       { id: payload.id, ...(payload.accountId && { account: { id: payload.accountId } }) },
-      { populate: ['account', 'file'] },
+      { populate: ['account', 'file', 'tags', 'enquiries'] },
     );
   }
 
@@ -85,5 +88,21 @@ export class DocumentsService {
     if (storageItemIds.length) await this.storageService.bulkDelete(storageItemIds);
 
     return await this.documentRepository.nativeDelete({ id: { $in: documents.map((document) => document.id) } });
+  }
+
+  public async addTags(payload: { documentId: IdType; accountId: IdType; tagIds: IdType[] }): Promise<number> {
+    const document = await this.documentRepository.findOneOrFail({
+      id: payload.documentId,
+      account: { id: payload.accountId },
+    });
+
+    const tags = await this.tagsService.findByIds({ accountId: payload.accountId, ids: payload.tagIds });
+
+    if (tags.length) {
+      document.tags.set(tags);
+      await this.em.flush();
+    }
+
+    return tags.length;
   }
 }

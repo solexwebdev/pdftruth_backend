@@ -37,7 +37,10 @@ export class UsersService {
   }
 
   public async getByEmail(email: string): Promise<User> {
-    return this.userRepository.findOneOrFail({ email });
+    return this.userRepository.findOneOrFail(
+      { email },
+      { populate: ['memberships.account', 'memberships.role', 'socials'] },
+    );
   }
 
   public async existByEmail(email: string): Promise<boolean> {

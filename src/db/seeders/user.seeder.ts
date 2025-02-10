@@ -1,6 +1,6 @@
 import { Seeder } from '@mikro-orm/seeder';
 import { Dictionary, EntityManager } from '@mikro-orm/postgresql';
-import { User } from '@/users/entities/user.entity';
+import { User } from '@/domains/users/entities/user.entity';
 
 export class UserSeeder extends Seeder {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars

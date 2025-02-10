@@ -1,4 +1,4 @@
-import { BucketStoragePathEnum } from '@/storage/enums/bucket-storage-path.enum';
+import { BucketStoragePathEnum } from '@/domains/storage/enums/bucket-storage-path.enum';
 
 export interface IUploadObjectData {
   fileBuffer: Buffer;

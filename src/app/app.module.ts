@@ -1,20 +1,21 @@
 import { MiddlewareConsumer, Module, NestModule, OnModuleInit } from '@nestjs/common';
-import { AppController } from './controllers/app.controller';
-import { AppService } from './services/app.service';
+import { AppController } from '@/app/controllers/app.controller';
+import { AppService } from '@/app/services/app.service';
 import { MikroOrmMiddleware, MikroOrmModule } from '@mikro-orm/nestjs';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { EnvValidationSchema } from '@/common/utils/env-validation-schema.util';
 import { microormFactory } from '@/common/factories/microorm.factory';
-import { UsersModule } from '@/users/users.module';
-import { AccountsModule } from '@/accounts/accounts.module';
-import { AuthModule } from '@/auth/auth.module';
+import { UsersModule } from '@/domains/users/users.module';
+import { AccountsModule } from '@/domains/accounts/accounts.module';
+import { AuthModule } from '@/domains/auth/auth.module';
 import { CommonModule } from '@/common/common.module';
 import { MikroORM } from '@mikro-orm/core';
 import { EventEmitterModule } from '@nestjs/event-emitter';
 import { VendorsModule } from '@/vendors/vendors.module';
-import { StorageModule } from '@/storage/storage.module';
-import { DocumentsModule } from '@/documents/documents.module';
-import { EnquiriesModule } from '@/enquiries/enquiries.module';
+import { StorageModule } from '@/domains/storage/storage.module';
+import { DocumentsModule } from '@/domains/documents/documents.module';
+import { EnquiriesModule } from '@/domains/enquiries/enquiries.module';
+import { TagsModule } from '@/domains/tags/tags.module';
 
 @Module({
   imports: [
@@ -36,6 +37,7 @@ import { EnquiriesModule } from '@/enquiries/enquiries.module';
     StorageModule,
     DocumentsModule,
     EnquiriesModule,
+    TagsModule,
   ],
   controllers: [AppController],
   providers: [AppService],

@@ -15,7 +15,7 @@ import { join } from 'path';
 import { S3_SETTINGS_CONFIG } from '@/vendors/consts/s3-settings.const';
 import { getSignedUrl } from '@aws-sdk/s3-request-presigner';
 import { IUploadObjectData } from '@/vendors/interfaces/upload-object-data.interface';
-import { BucketStoragePathEnum } from '@/storage/enums/bucket-storage-path.enum';
+import { BucketStoragePathEnum } from '@/domains/storage/enums/bucket-storage-path.enum';
 import { Environment } from '@/common/enums/environment.enum';
 
 @Injectable()

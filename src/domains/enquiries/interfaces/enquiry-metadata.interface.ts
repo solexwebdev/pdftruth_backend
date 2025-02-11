@@ -1,7 +1,7 @@
 export interface IEnquiryAnnotation {
   annotationFlags: boolean;
   modificationDate: string;
-  subtype: any;
+  subtype: string;
 }
 
 export interface IEnquiryPageInfo {

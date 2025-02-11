@@ -9,6 +9,7 @@ import { EnquiryValidPdfaHandler } from '@/domains/enquiries/handlers/enquiry-va
 import { DocumentsModule } from '@/domains/documents/documents.module';
 import { CommonModule } from '@/common/common.module';
 import { VendorsModule } from '@/vendors/vendors.module';
+import { EnquiryFactory } from '@/domains/enquiries/factories/enquiry.factory';
 
 @Module({
   imports: [MikroOrmModule.forFeature([Enquiry]), CommonModule, DocumentsModule, VendorsModule],
@@ -18,6 +19,7 @@ import { VendorsModule } from '@/vendors/vendors.module';
     EnquiryHashHandler,
     EnquiryMetadataHandler,
     EnquiryValidPdfaHandler,
+    EnquiryFactory,
   ],
 })
 export class EnquiriesModule {}

@@ -17,10 +17,10 @@ export class Document extends CustomBaseEntity {
   @OneToOne({ nullable: true, deleteRule: 'set null' })
   file?: StorageItem | null;
 
-  @OneToMany(() => Enquiry, (enquiry) => enquiry.document)
-  enquiries?: Enquiry[];
+  @OneToMany(() => Enquiry, (enquiry: Enquiry) => enquiry.document)
+  enquiries = new Collection<Enquiry>(this);
 
-  @ManyToMany(() => Tag, (tag) => tag.documents)
+  @ManyToMany(() => Tag, (tag: Tag) => tag.documents)
   tags = new Collection<Tag>(this);
 
   constructor(data: ICreateDocument) {

@@ -4,12 +4,14 @@ import { Document } from '@/domains/documents/entities/document.entity';
 import { Injectable } from '@nestjs/common';
 import { StorageService } from '@/domains/storage/services/storage.service';
 import { TagFactory } from '@/domains/tags/factories/tag.factory';
+import { EnquiryFactory } from '@/domains/enquiries/factories/enquiry.factory';
 
 @Injectable()
 export class DocumentFactory extends BaseResponseFactory<Document, DocumentResponse> {
   constructor(
     private readonly storageService: StorageService,
     private readonly tagFactory: TagFactory,
+    private readonly enquiryFactory: EnquiryFactory,
   ) {
     super();
   }
@@ -24,6 +26,11 @@ export class DocumentFactory extends BaseResponseFactory<Document, DocumentRespo
       createdAt: entity.createdAt,
       ...(entity.tags.isInitialized(true) &&
         !entity.tags?.isEmpty() && { tags: entity.tags?.getItems().map((el) => this.tagFactory.createResponse(el)) }),
+      ...(entity.enquiries?.isInitialized(true) &&
+        !entity.enquiries?.isEmpty() && {
+          enquiries: entity.enquiries?.map((el) => this.enquiryFactory.createResponse(el)),
+        }),
+      ...(options && { ...options }),
     });
   }
 }

@@ -11,6 +11,8 @@ import { EventEmitter2 } from '@nestjs/event-emitter';
 import { DocumentCreatedEvent } from '@/domains/documents/events/document-created.event';
 import { DocumentEvent } from '@/domains/documents/enums/document-event.enum';
 import { TagsService } from '@/domains/tags/services/tags.service';
+import { getEnumKeyByValue } from '@/common/utils/get-enum-key-by-value.util';
+import { SortDocuments } from '@/domains/documents/enums/sort-documents.enum';
 
 @Injectable()
 export class DocumentsService {
@@ -49,18 +51,29 @@ export class DocumentsService {
     accountId: IdType;
     query: DocumentsQueryDto;
   }): Promise<[Document[], number]> {
+    const sortField = payload.query.sortBy
+      ? getEnumKeyByValue(SortDocuments, payload.query.sortBy)
+      : 'documents.createdAt';
+
     const qb = this.documentRepository
-      .createQueryBuilder()
+      .createQueryBuilder('documents')
       .where({ account: { id: payload.accountId } })
       .leftJoinAndSelect('account', 'account')
       .leftJoinAndSelect('file', 'file')
       .leftJoinAndSelect('tags', 'tags')
-      .orderBy({ createdAt: payload.query.order })
+      .orderBy({
+        [sortField]: `${payload.query.order}`,
+      })
       .limit(payload.query.take)
       .offset(payload.query.skip);
 
     if (payload.query?.search?.length) {
-      qb.andWhere({ name: { $ilike: `%${payload.query.search}%` } });
+      qb.andWhere({
+        $or: [
+          { 'documents.name': { $ilike: `%${payload.query.search}%` } },
+          { 'tags.name': { $ilike: `%${payload.query.search}%` } },
+        ],
+      });
     }
 
     const [entities, count] = await qb.getResultAndCount();

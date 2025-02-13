@@ -16,6 +16,7 @@ import { StorageModule } from '@/domains/storage/storage.module';
 import { DocumentsModule } from '@/domains/documents/documents.module';
 import { EnquiriesModule } from '@/domains/enquiries/enquiries.module';
 import { TagsModule } from '@/domains/tags/tags.module';
+import { PointsModule } from '@/domains/points/points.module';
 
 @Module({
   imports: [
@@ -38,6 +39,7 @@ import { TagsModule } from '@/domains/tags/tags.module';
     DocumentsModule,
     EnquiriesModule,
     TagsModule,
+    PointsModule,
   ],
   controllers: [AppController],
   providers: [AppService],

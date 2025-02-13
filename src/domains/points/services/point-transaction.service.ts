@@ -1,8 +1,10 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@mikro-orm/nestjs';
 import { EntityManager, EntityRepository } from '@mikro-orm/postgresql';
-import { PointTransaction } from '../entities/point-transaction.entity';
 import { IdType } from '@/common/types/id.type';
+import { Account } from '@/domains/accounts/entities/account.entity';
+import { PointTransaction } from '@/domains/points/entities/point-transaction.entity';
+import { ICreatePointTransaction } from '@/domains/points/interfaces/create-point-transaction.interface';
 
 @Injectable()
 export class SomeService {
@@ -17,7 +19,7 @@ export class SomeService {
    * @param accountId ID of the account
    * @returns An array of point transactions
    */
-  public async findAll(accountId: IdType): Promise<PointTransaction[]> {
+  public async findByAccountId(accountId: IdType): Promise<PointTransaction[]> {
     return await this.pointTransactionRepository.find({ account: { id: accountId } });
   }
 
@@ -25,8 +27,10 @@ export class SomeService {
     return await this.pointTransactionRepository.findOne(id);
   }
 
-  public async create(data: Partial<PointTransaction>): Promise<PointTransaction> {
-    const newEntity = new PointTransaction(data);
+  public async create(payload: { accountId: IdType; data: ICreatePointTransaction }): Promise<PointTransaction> {
+    const newEntity = new PointTransaction({ ...payload.data });
+    newEntity.account = { id: payload.accountId } as Account;
+
     await this.em.persistAndFlush(newEntity);
 
     return newEntity;

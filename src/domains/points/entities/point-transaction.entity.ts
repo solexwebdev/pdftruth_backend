@@ -2,6 +2,7 @@ import { CustomBaseEntity } from '@/db/entities/custom-base.entity';
 import { Entity, Enum, ManyToOne, Property } from '@mikro-orm/core';
 import { Account } from '@/domains/accounts/entities/account.entity';
 import { TransactionType } from '@/domains/points/enums/transaction-type.enum';
+import { ICreatePointTransaction } from '@/domains/points/interfaces/create-point-transaction.interface';
 
 @Entity({ tableName: 'point_transactions' })
 export class PointTransaction extends CustomBaseEntity {
@@ -17,7 +18,7 @@ export class PointTransaction extends CustomBaseEntity {
   @Property({ type: 'text', default: null, nullable: true })
   description!: string | null;
 
-  constructor(data: { amount: number; transactionType: TransactionType; description: string }) {
+  constructor(data: ICreatePointTransaction) {
     super();
     Object.assign(this, data);
   }

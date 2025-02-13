@@ -83,6 +83,7 @@ services:
       - /bin/bash
       - -c
       - |
+        yarn run migration:up && yarn run seeder:run
         yarn run start:dev
 
 networks:

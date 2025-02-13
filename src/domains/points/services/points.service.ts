@@ -37,4 +37,8 @@ export class PointsService {
     );
     return point > 0 ? await this.pointRepository.findOne({ account: { id: payload.accountId } }) : null;
   }
+
+  public async fetchAllPointPricingRules(): Promise<PointPricingRule[]> {
+    return await this.pointPricingRuleRepository.findAll();
+  }
 }

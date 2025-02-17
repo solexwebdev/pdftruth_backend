@@ -5,9 +5,10 @@ import { IdType } from '@/common/types/id.type';
 import { Account } from '@/domains/accounts/entities/account.entity';
 import { PointTransaction } from '@/domains/points/entities/point-transaction.entity';
 import { ICreatePointTransaction } from '@/domains/points/interfaces/create-point-transaction.interface';
+import { TransactionType } from '@/domains/points/enums/transaction-type.enum';
 
 @Injectable()
-export class SomeService {
+export class PointTransactionService {
   constructor(
     @InjectRepository(PointTransaction)
     private readonly pointTransactionRepository: EntityRepository<PointTransaction>,
@@ -21,6 +22,13 @@ export class SomeService {
    */
   public async findByAccountId(accountId: IdType): Promise<PointTransaction[]> {
     return await this.pointTransactionRepository.find({ account: { id: accountId } });
+  }
+
+  public async hasInvitationBonus(accountId: IdType): Promise<boolean> {
+    return !!(await this.pointTransactionRepository.count({
+      account: { id: accountId },
+      transactionType: TransactionType.BONUS,
+    }));
   }
 
   public async findOne(id: IdType): Promise<PointTransaction | null> {
@@ -39,6 +47,7 @@ export class SomeService {
   public async update(id: IdType, data: Partial<PointTransaction>): Promise<PointTransaction | null> {
     const entity = await this.pointTransactionRepository.findOne(id);
     if (!entity) return null;
+
     Object.assign(entity, data);
     await this.em.persistAndFlush(entity);
 
@@ -48,6 +57,7 @@ export class SomeService {
   public async delete(id: IdType): Promise<boolean> {
     const entity = await this.pointTransactionRepository.findOne(id);
     if (!entity) return false;
+
     await this.em.removeAndFlush(entity);
 
     return true;

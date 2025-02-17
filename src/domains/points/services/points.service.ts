@@ -30,12 +30,9 @@ export class PointsService {
     return newPoint;
   }
 
-  public async updateBalance(payload: { accountId: IdType; amount: number }): Promise<Point | null> {
-    const point = await this.pointRepository.nativeUpdate(
-      { account: { id: payload.accountId } },
-      { balance: payload.amount },
-    );
-    return point > 0 ? await this.pointRepository.findOne({ account: { id: payload.accountId } }) : null;
+  public async updateBalance(payload: { pointId: IdType; amount: number }): Promise<Point | null> {
+    const point = await this.pointRepository.nativeUpdate({ id: payload.pointId }, { balance: payload.amount });
+    return point > 0 ? await this.pointRepository.findOne({ id: payload.pointId }) : null;
   }
 
   public async fetchAllPointPricingRules(): Promise<PointPricingRule[]> {

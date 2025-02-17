@@ -37,7 +37,7 @@ export class EnquiryMetadataHandler extends AbstractCORHandler {
     return await super.handle(request);
   }
 
-  private async analyzePdfStructure(pdfBuffer: Buffer): Promise<any> {
+  private async analyzePdfStructure(pdfBuffer: Buffer): Promise<IEnquiryMetaData> {
     const uint8Array = new Uint8Array(pdfBuffer).buffer;
     const pdf = await pdfjs.getDocument({ data: uint8Array }).promise;
     const md = await pdf.getMetadata();

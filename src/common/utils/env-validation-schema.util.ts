@@ -37,4 +37,6 @@ export const EnvValidationSchema = Joi.object().keys({
   [ConfigEnv.ENQUIRY_METADATA_ENABLED]: Joi.boolean().required(),
   [ConfigEnv.ENQUIRY_SIGNATURE_ENABLED]: Joi.boolean().required(),
   [ConfigEnv.ENQUIRY_VALID_PDFA_ENABLED]: Joi.boolean().required(),
+
+  [ConfigEnv.INVITATION_BONUS_POINT_AMOUNT]: Joi.number().required(),
 });

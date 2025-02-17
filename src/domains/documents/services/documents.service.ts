@@ -47,6 +47,13 @@ export class DocumentsService {
     return document;
   }
 
+  public async getById(payload: { id: IdType; accountId?: IdType }): Promise<Document> {
+    return await this.documentRepository.findOneOrFail(
+      { id: payload.id, ...(payload.accountId && { account: { id: payload.accountId } }) },
+      { populate: ['account'] },
+    );
+  }
+
   public async fetchByAccountId(payload: {
     accountId: IdType;
     query: DocumentsQueryDto;

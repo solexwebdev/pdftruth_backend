@@ -6,6 +6,9 @@ import { ICreateAccount } from '@/domains/accounts/interfaces/create-account.int
 import { IdType } from '@/common/types/id.type';
 import { UpdateAccountDto } from '@/domains/accounts/dto/update-account.dto';
 import { UsersService } from '@/domains/users/services/users.service';
+import { EventEmitter2 } from '@nestjs/event-emitter';
+import { AccountCreatedEvent } from '@/domains/users/events/account-created.event';
+import { AccountEvent } from '@/domains/users/enums/account-event.enum';
 
 @Injectable()
 export class AccountsService {
@@ -14,6 +17,7 @@ export class AccountsService {
     private readonly accountRepository: EntityRepository<Account>,
     private readonly em: EntityManager,
     private readonly usersService: UsersService,
+    private readonly eventEmitter: EventEmitter2,
   ) {}
 
   public async getUserAccounts(userId: IdType): Promise<Account[]> {
@@ -46,6 +50,9 @@ export class AccountsService {
   public async save(payload: ICreateAccount): Promise<Account> {
     const account = new Account({ ...(payload as ICreateAccount) });
     await this.em.persistAndFlush(account);
+
+    const event = new AccountCreatedEvent(account.id);
+    this.eventEmitter.emit(AccountEvent.Create, event);
 
     return account;
   }

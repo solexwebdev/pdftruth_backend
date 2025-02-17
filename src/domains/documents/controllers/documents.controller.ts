@@ -41,6 +41,7 @@ import { DocumentsFactory } from '@/domains/documents/factories/documents.factor
 import { PaginateMetaResponse } from '@/common/responses/paginate-meta.response';
 import { DocumentsResponse } from '@/domains/documents/responses/documents.response';
 import { DocumentTagsDto } from '@/domains/documents/dto/document-tags.dto';
+import { CheckPoints } from '@/domains/points/decorators/check-points.decorator';
 
 @ApiTags('Documents')
 @Controller('accounts/:accountId/documents')
@@ -63,6 +64,7 @@ export class DocumentsController {
   @UseInterceptors(FileInterceptor('file'))
   @Post()
   @UserAuth()
+  @CheckPoints()
   public async save(
     @Param('accountId') accountId: IdType,
     @UserToken() tokenData: JwtTokenData,
